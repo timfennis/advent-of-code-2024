@@ -1,0 +1,5 @@
+let input = read_file("input/2024/1.txt");
+
+for line in input.lines() {
+  print(line);
+}

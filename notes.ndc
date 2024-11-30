@@ -1,0 +1,15 @@
+// Grid problem help
+let grid = input.lines();
+let height = grid.len();
+let width = grid[0].len();
+
+
+for r in (0..height), c in (0..width) {
+	if lines[r][c] == "#" {
+		//
+	}
+}
+
+let trees = %{ (r, c) for r in (0..height), 
+                      c in (0..width),
+                      if grid[r][c] != "."};
