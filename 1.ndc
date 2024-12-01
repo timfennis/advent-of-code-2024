@@ -1,5 +1,25 @@
 let input = read_file("input/2024/1.txt");
 
+let left, right = [], [];
 for line in input.lines() {
-  print(line);
+  let l, r = line.nums();
+  left.push(l);
+  right.push(r);
 }
+
+left.sort();
+right.sort();
+
+let p1 = 0;
+for i in 0..(len(left)) {
+ p1 += max(left[i], right[i]) - min(left[i], right[i]);
+}
+
+print(p1);
+
+let p2 = 0;
+for l in left {
+  p2 += l * right.count(fn (a) { a == l });
+}
+
+print(p2);
