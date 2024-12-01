@@ -1,9 +1,4 @@
-let input = read_file("input/2024/1.txt").trim().lines().map(nums);
-let l = input.map(first);
-let r = input.map(last);
-
-let counter = %{:0};
-for rr in r { counter[rr] += 1; }
-
-print([abs(a - b) for a , b in zip(l.sorted(), r.sorted())].sum());
-print([ll * counter[ll] for ll in l].sum());
+let input = read_file("input/2024/1.txt").trim().lines().map(fn(x) { x.words().map(int) }).transposed();
+input.map(sorted).transposed().map(fn(x) { abs_diff(x.first(), x.last()) }).sum().print();
+let freq = input[1].frequencies();
+[l * freq[l] for l in input[0]].sum().print()
