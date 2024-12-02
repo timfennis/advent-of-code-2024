@@ -1,0 +1,29 @@
+let input = read_file("input/2024/2.txt");
+
+fn is_safe(ns) {
+	let pairs = ns.zip(ns[1..]).map(fn(t) {t[0] - t[1]});
+
+	return pairs.all(fn(x) { abs(x) >= 1 and abs(x) <= 3 }) and
+	    (pairs.all(fn(x) { x < 0 }) or pairs.all(fn(x) { x > 0 }))
+}
+
+fn is_safe2(ns) {
+	if is_safe(ns) { 
+		return true;
+	}
+
+	for i in (0..ns.len()) {
+		let new = ns.clone();
+		new.remove(i);
+		if is_safe(new) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+let out = input.lines().map(nums); 
+print(out.count(is_safe));
+print(out.count(is_safe2));
