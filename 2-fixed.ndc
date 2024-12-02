@@ -1,0 +1,15 @@
+let rows = read_file("input/2024/2.txt").trim.lines.map(nums);
+
+fn is_safe(ns) { 
+    let diffs = ns.pairwise(fn(a, b) { a - b });
+
+    diffs.all(fn(x) { x.abs in (1..=3) }) 
+      and diffs.map(signum).pairwise.all(fn(a) { a[0]==a[1] })
+}
+
+fn is_safe2(ns) {
+  is_safe(ns) or ns.subsequences(ns.len - 1).any(is_safe)
+}
+
+rows.count(is_safe).print;
+rows.count(is_safe2).print;

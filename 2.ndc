@@ -1,4 +1,4 @@
-let input = read_file("input/2024/2.txt");
+let input = read_file("input/2024/2.txt").trim;
 
 fn is_safe(ns) {
 	let pairs = ns.zip(ns[1..]).map(fn(t) {t[0] - t[1]});
