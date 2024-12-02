@@ -3,13 +3,24 @@ let grid = input.lines();
 let height = grid.len();
 let width = grid[0].len();
 
+let nb4 = [(-1, 0), (1, 0), (0, -1), (0, 1)];
+let nb5 = nb4 ++ [(0, 0)];
+let nb8 = [(x, y) for x in -1..=1, y in -1..=1, if x != 0 or y != 0];
+let nb9 = [(x, y) for x in -1..=1, y in -1..=1];
 
+// Iterate over grid and do stuff
 for r in (0..height), c in (0..width) {
 	if lines[r][c] == "#" {
 		//
 	}
 }
 
+// Collect stuff inside grid
 let trees = %{ (r, c) for r in (0..height), 
                       c in (0..width),
                       if grid[r][c] != "."};
+
+// Functional
+fn const(val) { fn() { val } }
+fn const(val) { fn(x) { val } }
+fn identity(ident) { ident }
