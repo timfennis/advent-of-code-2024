@@ -1,0 +1,24 @@
+let input = read_file("input/2024/3.txt");
+
+let p1 = 0;
+let p2 = 0;
+
+let mul = true;
+for ins in input.captures(r"(mul\((\d+),(\d+)\))|(do\(\))|(don\'t\(\))") {
+	print(ins);
+	if ins[0].starts_with("mul") {
+		let _, _, b, c = ins;
+		b = int(b);
+		c = int(c);
+		if mul {
+			p2 += b * c;
+		}
+		p1 += b * c;
+	} else if ins[0].starts_with("don't") {
+		mul = false;
+	} else {
+		mul = true;
+	}
+}
+
+print(p1, p2);
