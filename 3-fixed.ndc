@@ -1,0 +1,18 @@
+let input = read_file("input/2024/3.txt");
+
+let mul = true;
+let a = input.captures(r"mul\(\d+,\d+\)|do\(\)|don\'t\(\)")
+  .flat_map(fn(ins) {
+    if ins[0].starts_with("mul") {
+      [(mul, ins[0].nums.product)]
+    } else if ins[0].starts_with("don't") {
+      mul = false;
+      []
+    } else {
+      mul = true;
+      []
+    }
+  });
+
+a.map(fn(x) => x[1]).sum.print;
+a.filter(fn(x) => x[0] == true).map(fn(x) => x[1]).sum.print;
