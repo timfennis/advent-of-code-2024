@@ -20,29 +20,15 @@ for r in (0..height), c in (0..width), if grid[r][c] == "X" {
 print(ans);
 
 let ans = 0;
-for r in (0..height), c in (0..width), if grid[r][c] == "A" {
-	let check = 0;
+for r in (1..height-1), c in (1..width-1), if grid[r][c] == "A" {
 	let co = [r + dr, c + dc for dr, dc in [(-1, -1), (0, 0), (1, 1)] ];
 
-	if co.all(fn(c) => c[0] in (0..height) and c[1] in (0..width)) {
+	let l = [grid[rr][cc] for rr, cc in co];
+	if l == ["M", "A", "S"] or l == ["S", "A", "M"] { 
+		let co = [r + dr, c + dc for dr, dc in [(-1, 1), (0, 0), (1, -1)]];
+
 		let l = [grid[rr][cc] for rr, cc in co];
-		if l == list("MAS") or l == list("SAM") {
-			check += 1;
-		}
-	}
-
-	if check == 1{
-
-		let co = [r + dr, c + dc for dr, dc in [(-1, 1), (0, 0), (1, -1)] ];
-
-		if co.all(fn(c) => c[0] in (0..height) and c[1] in (0..width)) {
-			let l = [grid[rr][cc] for rr, cc in co];
-			if l == list("MAS") or l == list("SAM") {
-				check += 1;
-			}
-		}
-
-		if check == 2 {
+		if l == ["M", "A", "S"] or l == ["S", "A", "M"] { 
 			ans += 1;
 		}
 	}
