@@ -1,0 +1,60 @@
+let input = read_file("input/2024/4.txt");
+
+let grid = input.lines();
+let height = grid.len();
+let width = grid[0].len();
+
+let nb8 = [(x, y) for x in -1..=1, y in -1..=1, if x != 0 or y != 0];
+
+let ans = 0;
+for r in (0..height), c in (0..width) {
+	for (dr, dc) in nb8 {
+		let word = "";
+		let ok = true;
+		for i in 0..4 {
+			let dr = dr * i;
+			let dc = dc * i;
+			let nr, nc = r + dr, c + dc;
+
+			if nr not in (0..height) or nc not in (0..width) {
+				ok = false
+				break;
+			}
+			word <>= grid[nr][nc];
+		}
+		if ok { 
+			// print(word);
+			ans += if word == "XMAS" { 1 } else { 0 };
+		}
+	}
+}
+
+print(ans);
+
+let ans = 0;
+for r in (0..height), c in (0..width) {
+	let check = 0;
+	let co = [r + dr, c + dc for dr, dc in [(-1, -1), (0, 0), (1, 1)] ];
+
+	if co.all(fn(c) => c[0] in (0..height) and c[1] in (0..width)) {
+		let l = [grid[rr][cc] for rr, cc in co];
+		if l == list("MAS") or l == list("SAM") {
+			check += 1;
+		}
+	}
+
+	let co = [r + dr, c + dc for dr, dc in [(-1, 1), (0, 0), (1, -1)] ];
+
+	if co.all(fn(c) => c[0] in (0..height) and c[1] in (0..width)) {
+		let l = [grid[rr][cc] for rr, cc in co];
+		if l == list("MAS") or l == list("SAM") {
+			check += 1;
+		}
+	}
+
+	if check == 2 {
+		ans += 1;
+	}
+}
+
+ans.print
