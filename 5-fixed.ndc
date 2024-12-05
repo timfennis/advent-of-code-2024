@@ -8,19 +8,18 @@ for a, b in rules_txt.lines.map(nums) {
 	rules[b, a] = 1;
 }
 
-let out = [];
-let out2 = [];
+let p1, p2 = 0, 0;
 
 for line in things.lines {	
 	let ns = line.nums();
 	let nss = ns.sorted_by(fn(a, b) => rules[a, b]);
 
 	if ns == nss {
-		out.push(ns.get((ns.len / 2).floor.int))
+		p1 += ns.get((ns.len / 2).floor.int);
 	} else {
-		out2.push(nss.get((nss.len / 2).floor.int))
+		p2 += nss.get((nss.len / 2).floor.int);
 	}
 }
 
-out.sum.print;
-out2.sum.print;
+p1.print;
+p2.print;
