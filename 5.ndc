@@ -1,0 +1,105 @@
+let input = read_file("input/2024/5.txt");
+// let input = "
+// 47|53
+// 97|13
+// 97|61
+// 97|47
+// 75|29
+// 61|13
+// 75|53
+// 29|13
+// 97|29
+// 53|29
+// 61|53
+// 97|53
+// 61|29
+// 47|13
+// 75|47
+// 97|75
+// 47|61
+// 75|61
+// 47|29
+// 75|13
+// 53|13
+
+// 75,47,61,53,29
+// 97,61,53,29,13
+// 75,29,13
+// 75,97,47,61,53
+// 61,13,29
+// 97,13,75,29,47
+// ".trim;
+
+let rules, things = input.paragraphs;
+
+// let rules = %{:-5, to: from for from, to in rules.lines.map(nums) };
+let rules = rules.lines.map(nums);
+
+let out = [];
+let out2 = [];
+
+fn check(pages) {
+	for pages_after, cur_page in pages.suffixes[1..].zip(pages) {
+		for page_after in pages_after {
+			for a, b in rules {
+				if a == page_after and b == cur_page {
+					return false;
+				}
+			}
+		}	
+	}
+	return true;
+}
+
+for thing in things.lines {	
+	let pages = thing.nums;
+	let ok = true;
+
+	if pages.len == 1 {
+		assert(false);
+	} else if pages.len > 1 {
+		// print(pages.prefixes.zip(pages[1..]));
+		
+
+		// if check(pages) {
+		// 	print(pages);
+		// 	let idx = int(floor(pages.len / 2));
+		// 	// print(pages, pages.len,	idx	);
+		// 	out.push(pages.get(idx));
+		// }
+
+		if not check(pages) {
+
+
+		let pages = pages.sorted_by(fn(a, b) {
+			for lo, hi in rules {
+				if a == lo and b == hi {
+					return -1;
+				} else if a == hi and b == lo {
+					return 1;
+				}
+			}
+
+			return 0;
+		});
+
+		print(pages);
+		assert(pages.check);
+
+
+		let idx = int(floor(pages.len / 2));
+		// print(pages, pages.len,	idx	);
+		out2.push(pages.get(idx));
+		}
+	}
+
+	// assert(false);
+
+}
+
+out.sum.print;
+out2.sum.print;
+
+// 11436 == wrong
+// 11606 == too high
+
