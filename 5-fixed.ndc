@@ -1,0 +1,26 @@
+let input = read_file("input/2024/5.txt");
+let rules_txt, things = input.paragraphs;
+
+let rules = %{:0};
+
+for a, b in rules_txt.lines.map(nums) {
+	rules[a, b] = -1;
+	rules[b, a] = 1;
+}
+
+let out = [];
+let out2 = [];
+
+for line in things.lines {	
+	let ns = line.nums();
+	let nss = ns.sorted_by(fn(a, b) => rules[a, b]);
+
+	if ns == nss {
+		out.push(ns.get((ns.len / 2).floor.int))
+	} else {
+		out2.push(nss.get((nss.len / 2).floor.int))
+	}
+}
+
+out.sum.print;
+out2.sum.print;
