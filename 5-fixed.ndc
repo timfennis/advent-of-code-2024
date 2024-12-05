@@ -1,23 +1,14 @@
-let input = read_file("input/2024/5.txt");
-let rules_txt, things = input.paragraphs;
-
-let rules = %{:0};
-
-for a, b in rules_txt.lines.map(nums) {
-	rules[a, b] = -1;
-	rules[b, a] = 1;
-}
-
+let txt, pages = read_file("input/2024/5.txt").paragraphs;
+let rules = %{:0, (a, b): -1 for a, b in txt.lines.map(nums) };
 let p1, p2 = 0, 0;
 
-for line in things.lines {	
-	let ns = line.nums();
+for ns in pages.lines.map(nums) {	
 	let nss = ns.sorted_by(fn(a, b) => rules[a, b]);
 
 	if ns == nss {
-		p1 += ns.get((ns.len / 2).floor.int);
+		p1 += ns[ns.len \ 2];
 	} else {
-		p2 += nss.get((nss.len / 2).floor.int);
+		p2 += nss[nss.len \ 2];
 	}
 }
 
