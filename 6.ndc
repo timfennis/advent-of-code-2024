@@ -13,20 +13,19 @@ let input = read_file("input/2024/6.txt");
 let dir_map = %{">": (0, 1), "v": (1, 0), "<": (0, -1), "^": (-1, 0)};
 
 fn show() {
-
-		for r in (0..height) {
-			let buf = "";
-			for c in (0..height) {
-				buf <>= if (r, c) in obs {
-					"#"
-				} else if (r, c) in seen {
-					"X"
-				} else {
-					"."
-				}
+	for r in (0..height) {
+		let buf = "";
+		for c in (0..height) {
+			buf <>= if (r, c) in obs {
+				"#"
+			} else if (r, c) in seen {
+				"X"
+			} else {
+				"."
 			}
-			print(buf);
 		}
+		print(buf);
+	}
 }
 
 fn next_dir(dir) {
@@ -85,7 +84,7 @@ fn solve(new_obs) {
 }
 
 let ans = 0;
-let try = solve((-500, -500)).keys.map(fn(x) => x[0]).set.keys;
+let try = solve((-1, -1)).keys.map(fn(x) => x[0]).set.keys;
 try.len.print
 for pos in try, if pos != start_pos {
 	let s = solve(pos);
