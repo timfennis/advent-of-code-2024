@@ -1,0 +1,94 @@
+let input = read_file("input/2024/6.txt");
+// let input = "....#.....
+// .........#
+// ..........
+// ..#.......
+// .......#..
+// ..........
+// .#..^.....
+// ........#.
+// #.........
+// ......#...
+// ".trim;
+let dir_map = %{">": (0, 1), "v": (1, 0), "<": (0, -1), "^": (-1, 0)};
+
+fn show() {
+
+		for r in (0..height) {
+			let buf = "";
+			for c in (0..height) {
+				buf <>= if (r, c) in obs {
+					"#"
+				} else if (r, c) in seen {
+					"X"
+				} else {
+					"."
+				}
+			}
+			print(buf);
+		}
+}
+
+fn next_dir(dir) {
+	if dir == (0, 1) { (1, 0) }
+	else if dir == (-1, 0) { (0, 1) }
+	else if dir == (0, -1) { (-1, 0) }
+	else if dir == (1, 0) { (0, -1) }
+	else { assert(false) }
+}
+
+let grid = input.lines();
+let height = grid.len();
+let width = grid[0].len();
+
+// Collect stuff inside grid
+let obs = %{ (r, c) for r in (0..height), 
+                      c in (0..width),
+                      if grid[r][c] == "#"};
+
+let start_pos = ();
+let start_dir = ();
+
+for r in (0..height), c in (0..width), if grid[r][c] in ">^<v" {
+	start_pos = (r, c);
+
+	start_dir = dir_map[grid[r][c]];
+	break;
+}
+
+fn solve(new_obs) {
+	let obs = obs | %{new_obs};
+	let seen = %{(start_pos, start_dir)};
+	let dir = start_dir;
+	let pos = start_pos;
+	while true {
+		let cr, cc = pos;
+		let dr, dc = dir;
+		let nr, nc = (cr + dr), (cc + dc);
+		if nr in (0..height) and nc in (0..width) {
+			if (nr, nc) in obs {
+				dir = next_dir(dir);
+			} else {
+				pos = (nr, nc);
+
+				if (pos, dir) in seen {
+					return true;
+				} else {
+					seen.insert((pos, dir));
+				}
+			}
+
+		} else {
+			return seen;
+		}
+	}
+}
+
+let ans = 0;
+let try = solve((-500, -500)).keys.map(fn(x) => x[0]).set.keys;
+try.len.print
+for pos in try, if pos != start_pos {
+	let s = solve(pos);
+	if s == true { ans += 1 };
+}
+ans.print

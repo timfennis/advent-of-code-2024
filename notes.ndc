@@ -15,10 +15,6 @@ for r in (0..height), c in (0..width) {
 	}
 }
 
-// Collect stuff inside grid
-let trees = %{ (r, c) for r in (0..height), 
-                      c in (0..width),
-                      if grid[r][c] != "."};
 
 // Functional
 fn const(val) { fn() { val } }
