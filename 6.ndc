@@ -85,9 +85,9 @@ fn solve(new_obs) {
 
 let ans = 0;
 let try = solve((-1, -1)).keys.map(fn(x) => x[0]).set.keys;
-try.len.print
+try.len.print;
 for pos in try, if pos != start_pos {
 	let s = solve(pos);
 	if s == true { ans += 1 };
 }
-ans.print
+ans.print;
