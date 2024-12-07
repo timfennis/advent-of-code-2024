@@ -1,0 +1,43 @@
+let input = read_file("input/2024/7.txt");
+
+let ops = [
+  fn(a, b) => a * b,
+  fn(a, b) => a + b,
+  fn(a, b) => int(a <> b)
+];
+
+fn solve(target, rest, ops) {
+  if rest.len == 1 {
+    return target == rest[0]
+	}
+
+  if rest[0] > target {
+    return false;
+  }
+
+	for f in ops {
+    // Maybe I should allow slicing OOB like python does :\
+    let tail = if rest.len == 2 { [] } else { rest[2..] };
+    if solve(target, [f(rest[0], rest[1])] ++ tail, ops) {
+      return true;
+    }
+	}
+
+	return false;
+}
+
+let p1, p2 = 0, 0;
+
+for line in input.lines {
+	let nums = line.nums;
+
+	if solve(nums[0], nums[1..], ops[0..2]) {
+		p1 += nums[0];
+	}
+
+	if solve(nums[0], nums[1..], ops) {
+		p2 += nums[0];
+	}
+}
+
+print(p1, p2);

@@ -5,6 +5,7 @@ fn mul(a, b) => a * b;
 fn add(a, b) => a + b;
 fn cat(a, b) => int(a <> b);
 
+
 fn solve(cur, rest, cap, opts) {
 	let head, tail = if rest.len == 1{
 		rest[0], []
@@ -46,4 +47,5 @@ for line in input.lines {
 	}
 }
 
-ans.print;
+p1.print;
+p2.print;
