@@ -1,0 +1,49 @@
+let input = read_file("input/2024/7.txt");
+
+
+fn mul(a, b) => a * b;
+fn add(a, b) => a + b;
+fn cat(a, b) => int(a <> b);
+
+fn solve(cur, rest, cap, opts) {
+	let head, tail = if rest.len == 1{
+		rest[0], []
+	} else if rest.len == 0 {
+		return cur == cap;
+	} else {
+		rest[0], rest[1..]
+	};
+
+
+	let out = [];
+	for f in opts {
+		let n = f(cur, head);
+		if n <= cap {
+			if solve(n, tail, cap, opts) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+let p1 = 0;
+let p2 = 0;
+
+for line in input.lines {
+	let target, nums = line.split_once(":");
+
+	target = target.int;
+	nums = nums.nums;
+
+	if solve(nums[0], nums[1..], target, [mul, add]) {
+		p1 += target;
+	}
+
+	if solve(nums[0], nums[1..], target, [mul, add, cat]) {
+		p2 += target;
+	}
+}
+
+ans.print;
