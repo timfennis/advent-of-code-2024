@@ -1,0 +1,30 @@
+let grid = read_file("input/2024/8.txt").lines;
+
+let height, width = grid.len, grid[0].len;
+
+let obs = %{(r, c): grid[r][c] for r in (0..height), c in (1..width), if grid[r][c] != "."};
+let p1, p2 = %{}, %{};
+
+for (loc, freq) in obs, (loc2, freq2) in obs, if freq == freq2 and loc != loc2 {
+	let dr = loc2[0] - loc[0];
+	let dc = loc2[1] - loc[1];
+
+	let nr = loc[0] + (-1 * dr);
+	let nc = loc[1] + (-1 * dc);
+
+	if nr in (0..height) and nc in (0..width) { 
+		p1.insert((nr, nc));
+	}
+
+	// Lol going -50 -> 50 is super hacky
+	for i in -50..=50 {
+		let nr = loc[0] + (i * dr);
+		let nc = loc[1] + (i * dc);
+
+		if nr in (0..height) and nc in (0..width) { 
+			p2.insert((nr, nc));
+		}
+	}
+}
+
+print(p1.len, p2.len);
