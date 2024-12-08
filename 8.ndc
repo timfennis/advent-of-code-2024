@@ -1,0 +1,70 @@
+let input = read_file("input/2024/8.txt");
+// let input = "
+// ............
+// ........0...
+// .....0......
+// .......0....
+// ....0.......
+// ......A.....
+// ............
+// ............
+// ........A...
+// .........A..
+// ............
+// ............".trim;
+
+let grid = input.lines();
+let height = grid.len();
+let width = grid[0].len();
+
+let obs = %{ (r, c): grid[r][c] for r in (0..height), c in (1..width), if grid[r][c] != "."};
+let locs = %{};
+let locs2 = %{};
+
+let p1, p2 = 0, 0;
+
+for (loc, freq) in obs {
+	for (loc2, freq2) in obs, if freq == freq2 and loc != loc2 {
+		let dr = loc2[0] - loc[0];
+		let dc = loc2[1] - loc[1];
+		// print(loc, loc2, "dr,dc="<>dr<>","<>dc);
+
+		let nr = loc[0] + (2 * dr);
+		let nc = loc[1] + (2 * dc);
+		if nr in (0..height) and nc in (0..width) { 
+			locs.insert((nr, nc));
+		}
+
+		let nr = loc[0] + (-1 * dr);
+		let nc = loc[1] + (-1 * dc);
+		if nr in (0..height) and nc in (0..width) { 
+			locs.insert((nr, nc));
+		}
+
+		for i in -50..=50 {
+			let nr = loc[0] + (i * dr);
+			let nc = loc[1] + (i * dc);
+
+			if nr in (0..height) and nc in (0..width) { 
+				locs2.insert((nr, nc));
+			}
+		}
+	}
+}
+
+// for rr in (0..height) {
+// 	let buf = "";
+// 	for cc in (0..width) {
+// 		buf <>= if (rr, cc) in locs {
+// 			"#"
+// 		} else if (rr, cc) in obs {
+// 			obs[rr, cc]
+// 		} else {
+// 			"."
+// 		};
+// 	}
+
+// 	print(buf);
+// }
+
+print(locs.len, locs2.len);

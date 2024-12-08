@@ -18,6 +18,10 @@ for r in (0..height), c in (0..width) {
 	}
 }
 
+//
+let obs = %{ (r, c) for r in (0..height), 
+                      c in (0..width),
+                      if grid[r][c] == "#"};
 
 // Functional
 fn const(val) { fn() { val } }
