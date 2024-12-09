@@ -1,0 +1,59 @@
+let input = read_file("input/2024/9.txt").trim;
+// let input = "2333133121414131402";
+
+let p1, p2 = 0, 0;
+
+let out = [];
+let file_id = 0;
+for idx, num in input.enumerate {
+	// print(num);
+	let num = int(num);
+	if idx % 2 == 0 {
+		for _ in (0..num) {
+			out.push(file_id);
+		}
+		file_id += 1;
+	} else {
+		for _ in (0..num) {
+			out.push(None);
+		}
+	}
+}
+
+let idx = 0;
+let rev = out.len - 1;
+while idx < rev {
+	if out[idx] == None {
+		let get = None;
+		while idx < rev {
+			if out[rev] != None {
+				get = out[rev];	
+				out[rev] = None;
+				break;
+			}
+
+			rev -= 1;
+		}
+
+		out[idx] = get;
+	}
+
+	idx += 1;
+
+}
+
+// print(out);
+
+for (idx, id) in out.enumerate {
+	if id != None {
+		p1 += (idx * id);
+	}
+}
+// kprint(out);
+// MAYBE: 6310675819468
+assert(p1 != 6310675819468);
+assert(p1 != 6310706208482);
+assert(p1 != 6310926355054);
+assert(p1 != 5423519106651);
+
+print(p1, p2);

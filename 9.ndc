@@ -1,0 +1,63 @@
+let input = read_file("input/2024/9.txt").trim;
+// let input = "2333133121414131402";
+
+let p1, p2 = 0, 0;
+
+let out = [];
+let file_id = 0;
+for idx, num in input.enumerate {
+	// print(num);
+	if idx % 2 == 0 {
+		out.push((file_id, int(num)));
+		file_id += 1;
+	} else {
+		out.push((-1, int(num)));
+	}
+}
+
+let rev = out.len - 1;
+
+while rev > 0  {
+	let id, size = out[rev];
+	if id != -1 {
+		let idx = 0;
+		let new = None;
+		// Find a space to put the file
+		while idx < rev {
+			if out[idx][1] >= size and out[idx][0] == -1 {
+				new = out[idx];
+				break;
+			}
+
+			idx += 1;
+		}
+
+		if new != None {
+			let new_id, slot_size = new;
+			let rem = slot_size - size;
+
+			out[idx] = (id, size);
+			out[rev] = (-1, size);
+
+			if rem > 0 {
+				out.insert(idx + 1, (new_id, rem));
+			}
+		}
+	}
+
+	rev -= 1;
+
+}
+
+// print(out);
+let pos = 0;
+for (_, (id, cnt)) in out.enumerate {
+	for _ in (0..cnt) {
+		if id != -1 {
+			p1 += (pos * id);
+		}
+		pos += 1;
+	}
+}
+
+print(p1, p2);
