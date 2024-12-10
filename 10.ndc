@@ -34,8 +34,9 @@ fn all_paths(start) {
 
 let p1, p2 = 0, 0;
 for r in 0..height, c in 0..width, if grid[r][c] == 0 {
-    p1 += all_paths((r, c)).keys.map(last).set.len;
-    p2 += all_paths((r, c)).len;
+    let ap = all_paths((r, c));
+    p2 += ap.len;
+    p1 += ap.keys.map(last).set.len;
 }
 
 print(p1, p2);
