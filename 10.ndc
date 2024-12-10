@@ -1,0 +1,41 @@
+let input = read_file("input/2024/10.txt");
+let grid = input.trim.lines.map(fn(line) => line.map(int));
+
+let height, width = grid.len, grid[0].len;
+let nb4 = [(-1, 0), (1, 0), (0, -1), (0, 1)];
+
+fn all_paths(start) {
+	let q = MinHeap();
+	q.push([start]);
+
+	let seen = %{};
+	while q.len > 0 {
+		let path = q.pop.unwrap;
+		let cur = path.last;
+		let cur_h = grid[cur[0]][cur[1]];
+
+		for nb in nb4 {
+			let next = cur + nb;
+			if next[0] in (0..width) and next[1] in (0..height) and next not in path {
+				let next_h = grid[next[0]][next[1]];
+				if next_h == cur_h + 1 {
+					if next_h == 9 {
+						seen.insert(path ++ [next]);
+					} else {
+					  	q.push(path ++ [next]);
+					}
+				}
+			}
+		}
+	}
+
+	return seen;
+}
+
+let p1, p2 = 0, 0;
+for r in 0..height, c in 0..width, if grid[r][c] == 0 {
+	p1 += all_paths((r, c)).keys.map(last).set.len;
+	p2 += all_paths((r, c)).len;
+}
+
+print(p1, p2);
