@@ -1,0 +1,35 @@
+let nums = read_file("input/2024/11.txt").trim.nums;
+let stones = %{:0};
+
+for num in nums {
+	stones[num] += 1;
+}
+
+let p1, p2 = 0, 0;
+for i in 1..=1000 {
+	let next = %{:0};
+	for (num, amount) in stones {
+		if num == 0 {
+			next[1] += amount;
+		} else if ("" <> num).len % 2 == 0 {
+			let s = ("" <> num);
+			let l = int(s[0..(s.len \ 2)]);
+			let r = int(s[(s.len \ 2)..]);
+			next[l] += amount;
+			next[r] += amount;
+		} else {
+			next[num * 2024] += amount;
+		}
+	}
+	stones = next;
+
+	if i == 25 {
+		p1 = stones.values.sum;
+	} else if i == 75 {
+		p2 = stones.values.sum;
+	}
+
+	// print("blink=" <> i, "sum=" <> stones.values.sum, "len=" <> stones.values.len);
+}
+
+print(p1, p2);
