@@ -1,0 +1,125 @@
+let input = read_file("input/2024/12.txt").trim;
+// let input = "RRRRIICCFF
+// RRRRIICCCF
+// VVRRRCCFFF
+// VVRCCCJFFF
+// VVVVCJJCFE
+// VVIVCCJJEE
+// VVIIICJJEE
+// MIIIIIJJEE
+// MIIISIJEEE
+// MMMISSJEEE".trim;
+
+let grid = input.lines.map(list);
+
+let height = grid.len;
+let width = grid[0].len;
+
+let seen = %{};
+let areas = %{};
+
+fn nb4(p) {
+	[p + d for d in [(-1, 0), (1, 0), (0, -1), (0, 1)], if (p + d)[0] in (0..height) and (p + d)[1] in (0..width)]
+}
+fn nbo(p) {
+	[p + d for d in [(-1, 0), (1, 0), (0, -1), (0, 1)]]
+}
+
+fn search(sr, sc) {
+	let char = grid[sr][sc];
+	let obj = %{(sr, sc)};
+	let que = [(sr, sc)];
+
+	while que.len > 0 {
+		let cur = que.pop();
+
+		for next in nb4(cur) {
+			if next not in obj and grid[next[0]][next[1]] == char {
+				obj.insert(next);
+				que.push(next);
+			}
+		}
+	}
+
+	obj
+}
+
+fn perim(shape) {
+	let p = 0;
+	for (pos), _ in shape {
+		p +=  [_ for nb in nbo(pos), if nb not in shape].len
+	}
+	return p;
+}
+
+fn sides(shape) {
+	let p = 0;
+
+	// for r in (0..height) {
+	// 	let out = "";
+	// 	for c in (0..width) {
+	// 		out <>= if (r,c) in shape { grid[r][c] } else { "." };
+	// 	}
+	// 	print(out);
+	// }
+
+	let sides = %{:fn() => []};
+	for (pos), _ in shape {
+		for delta in [(-1, 0), (1, 0), (0, -1), (0, 1)] {
+			if (pos + delta) not in shape {
+				sides[delta].push(pos + delta);
+			}
+		}
+	}
+
+
+	for dir, locs in sides {
+		let groups = %{};
+
+		for loc in locs {
+			let group = %{loc};
+			fn dfs(pos) {
+				for nb in nbo(pos) {
+					if nb in locs and nb not in group {
+						group.insert(nb);
+						dfs(nb);
+					}
+				}
+
+				return group;
+			}
+			dfs(loc);
+			groups.insert(group);
+		}
+
+		p += groups.len;
+	}
+
+
+	return p;
+}
+
+for r in (0..height), c in (0..width) {
+	if (r, c) not in seen {
+		let out = search(r, c);
+		seen |= out;
+		areas[r, c] = out;
+	}
+}
+
+let p1, p2 = 0, 0;
+for (pos, ss) in areas {
+
+	let x, xx = Inf, -Inf;
+	let y, yy = Inf, -Inf;
+
+	let perim = perim(ss);
+	let sides = sides(ss);
+	let area = ss.len;
+	p1 += perim * area;
+	p2 += sides * area;
+
+	// print(grid[pos[0]][pos[1]], "area="<>area,"sides="<>sides,  "price="<>sides * area);
+}
+
+print(p1, p2);
