@@ -1,0 +1,43 @@
+let input = read_file("input/2024/13.txt").trim;
+
+// STUPID SOLUTION P1
+pure fn solve(ap, bp, x, y, data) {
+	let ax, ay, bx, by, tx, ty = data;
+	if x == tx and y == ty {
+		return ap * 3 + bp;
+	}
+	
+	let best = Inf;
+	if x + ax <= tx and y + ay <= ty {
+		best min= solve(ap + 1, bp, x + ax, y + ay, data)
+	}
+
+	if x + bx <= tx and y + by <= ty {
+		best min= solve(ap, bp + 1, x + bx, y + by, data);
+	}
+
+	return best;
+}
+
+let p1, p2 = 0, 0;
+
+for group in input.paragraphs 
+{
+	let a, b, prize = group.lines;
+	let ax, ay = a.nums;
+	let bx, by = b.nums;
+	let tx, ty = prize.nums;
+
+
+	let s = solve(0, 0, 0, 0, (ax, ay, bx, by, tx, ty));
+	let s2 = solve(0, 0, 0, 0 (ax, ay, bx, by, tx + 10000000000000, ty + 10000000000000));
+	if s < Inf {
+		p1 += s;
+	}
+
+	ifi s2 < Inf {
+		p2 += s2;
+	}
+}
+
+print(p1, p2);
