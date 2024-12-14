@@ -3,6 +3,18 @@ let input = read_file("input/2024/14.txt").trim;
 let width, height = 101, 103;
 let dim = (width, height);
 
+fn score(state) {
+  let score = 0;
+  for r in state.keys {
+    for d in [(-1, 0), (0, -1), (1, 0), (0, 1)] {
+      if r + d in state {
+        score += 1;
+      }
+    }
+  }
+  score
+}
+
 fn part1(robots) {
   let q = [0,0,0,0];
   for ((x, y), _) in robots {
@@ -20,32 +32,35 @@ fn part1(robots) {
     }
   }
 
-  print("Part 1", q.product);
+  q.product
 }
 
 let robots = input.lines
   .map(signed_nums)
   .map(fn(a) => ((a[0], a[1]), (a[2], a[3])));
 
-for i in (1..=8053) {
+let seen = %{};
+let p1, p2 = 0, 0;
+let best = -Inf;
+
+for i in (1..) {
 	robots map= fn(r) => ((r[0] + r[1]) %% dim, r[1]);
+  let state = %{r[0] for r in robots};
+  if state in seen {
+    break;
+  } else {
+    let s = score(state);
+    seen[state] = s;
+    if s > best {
+      best = s;
+      p2 = i;
+    }
+  }
   if i == 100 {
-    part1(robots);
+    p1 = part1(robots);
   }
 }
 
-let obj = %{p for p, _ in robots};
-for r in (0..height) {
-	let out = "";
-	for c in (0..width) {
-		if (c,r) in obj {
-			out <>= "X";
-		} else {
-			out <>= ".";
-		}
-	}
-	print(out);
-}
 
-
-print("Part 2", 8053);
+print("Part 1", p1);
+print("Part 2", p2);
