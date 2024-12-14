@@ -1,0 +1,48 @@
+let input = read_file("input/2024/14.txt").trim;
+
+let width, height = 101, 103;
+let dim = (width, height);
+
+let robots = [];
+
+for line in input.lines {
+	let px, py, vx, vy = line.signed_nums;
+	robots.push(((px, py), (vx, vy)));
+}
+
+for i in (1..=8053) {
+	robots map= fn(r) => ((r[0] + r[1]) %% dim, r[1]);
+}
+
+let obj = %{p for p, _ in robots};
+for r in (0..height) {
+	let out = "";
+	for c in (0..width) {
+		if (c,r) in obj {
+			out <>= "X";
+		} else {
+			out <>= ".";
+		}
+	}
+	print(out);
+}
+
+let q = [0,0,0,0];
+for rob in robots {
+	let x, y = rob[0], rob[1];
+	if x in (0..50) and y in (0..51) {
+		q[0] += 1;
+	}
+	if x in (51..101) and y in (0..51) {
+		q[1] += 1;
+	}
+	if x in (0..50) and y in (52..103) {
+		q[2] += 1;
+	}
+	if x in (51..101) and y in (52..103) {
+		q[3] += 1;
+	}
+}
+
+print("Part 1", q.product);
+print("Part 2", 8053);
