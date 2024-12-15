@@ -1,0 +1,78 @@
+let input = read_file("input/2024/15.txt").trim;
+
+let grid, instructions = input.paragraphs;
+grid = grid.lines;
+
+let width = grid[0].len;
+let height = grid.len;
+
+let walls = %{};
+let boxes = %{};
+let cur = ();
+
+for r in (0..height), c in (0..width) {
+	if grid[r][c] == "#" {
+		walls.insert((r, 2 * c));
+		walls.insert((r, 2 * c + 1));
+	} else if grid[r][c] == "O" {
+		boxes.insert(((r, 2 * c), (r, 2 * c + 1)));
+	} else if grid[r][c] == "@" {
+		cur = (r, 2 * c);
+	}
+}
+
+let width = grid[0].len * 2;
+
+assert(cur != ());
+
+let dir_map = %{:None, ">": (0, 1), "v": (1, 0), "<": (0, -1), "^": (-1, 0)};
+let p1, p2 = 0, 0;
+
+instructions = instructions.map(fn(x) => dir_map[x.trim] ).filter(fn(x) => x != None);
+for ins in instructions {
+	let collision = boxes.keys.flat_map(fn(x) => x).set;
+	let next = cur + ins;
+	if next in walls {
+		// do nothing
+	} else if next in collision {
+		let seen = %{};
+		fn is_free(pos, dir) {
+			if pos in collision {
+				let box = boxes.keys.find(fn(box) => box[0] == pos or box[1] == pos);
+				seen.insert(box);
+				if dir == (0, -1) {
+					return is_free(box[0] + ins, dir);
+				} else if dir == (0, 1) {
+					return is_free(box[1] + ins, dir);
+				} else {
+					return is_free(box[0] + ins, dir) and is_free(box[1] + ins, dir);
+				}
+			} else if pos in walls {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		if is_free(next, ins) {
+			let new = %{};
+			for to_move in seen.keys {
+				boxes.remove(to_move);
+				let l, r = to_move;
+				l += ins;
+				r += ins;
+				new.insert((l, r));
+			}
+			boxes |= new;
+			cur = next;
+		} 
+	} else {
+		cur = next;
+	}
+}
+
+for ((y, x), _) in boxes.keys {
+	p1 += 100 * y + x;
+}
+
+print(p1, p2);

@@ -1,0 +1,23 @@
+
+fn dump() {
+	let left = boxes.keys.map(fn(x) => x[0]).set;
+	let right = boxes.keys.map(fn(x) => x[1]).set;
+	print(boxes);
+	for r in (0..height) {
+		let out = "";
+		for c in (0..width) {
+			out <>= if (r, c) in walls {
+				"#"
+			} else if (r, c) in left {
+				"["
+			} else if (r, c) in right {
+				"]"
+			} else if (r, c) == cur {
+				"@"
+			} else {
+				"."
+			};
+		}
+		print(out);
+	}
+}

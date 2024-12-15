@@ -1,0 +1,114 @@
+let input = read_file("input/2024/15.txt").trim;
+// let input = "##########
+// #..O..O.O#
+// #......O.#
+// #.OO..O.O#
+// #..O@..O.#
+// #O#..O...#
+// #O..O..O.#
+// #.OO.O.OO#
+// #....O...#
+// ##########
+
+// <vv>^<v^>v>^vv^v>v<>v^v<v<^vv<<<^><<><>>v<vvv<>^v^>^<<<><<v<<<v^vv^v>^
+// vvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v
+// ><>vv>v^v^<>><>>>><^^>vv>v<^^^>>v^v^<^^>v^^>v^<^v>v<>>v^v^<v>v^^<^^vv<
+// <<v<^>>^^^^>>>v^<>vvv^><v<<<>^^^vv^<vvv>^>v<^^^^v<>^>vvvv><>>v^<<^^^^^
+// ^><^><>>><>^^<<^^v>>><^<v>^<vv>>v>>>^v><>^v><<<<v>>v<v<v>vvv>^<><<>^><
+// ^>><>^v<><^vvv<^^<><v<<<<<><^v<<<><<<^^<v<^^^><^>>^<v^><<<^>>^v<v^v<v^
+// >^>>^v>vv>^<<^v<>><<><<v<<v><>v<^vv<<<>^^v^>^^>>><<^v>>v^v><^^>>^<>vv^
+// <><^^>^^^<><vvvvv^v<v<<>^v<v>v<<^><<><<><<<^^<<<^<<>><<><^^^>^^<>^>v<>
+// ^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>
+// v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^".trim;
+
+let grid, instructions = input.paragraphs;
+grid = grid.lines;
+
+let width = grid[0].len;
+let height = grid.len;
+
+let walls = %{};
+let boxes = %{};
+let cur = ();
+
+for r in (0..height), c in (0..width) {
+	if grid[r][c] == "#" {
+		walls.insert((r, c));
+	} else if grid[r][c] == "O" {
+		boxes.insert((r, c));
+	} else if grid[r][c] == "@" {
+		cur = (r, c);
+	}
+}
+
+fn dump() {
+	for r in (0..height) {
+		let out = "";
+		for c in (0..width) {
+			out <>= if (r, c) in walls {
+				"#"
+			} else if (r, c) in boxes {
+				"O"
+			} else if (r, c) == cur {
+				"@"
+			} else {
+				"."
+			};
+		}
+		print(out);
+	}
+}
+
+assert(cur != ());
+
+let dir_map = %{:None, ">": (0, 1), "v": (1, 0), "<": (0, -1), "^": (-1, 0)};
+let p1, p2 = 0, 0;
+
+instructions = instructions.map(fn(x) => dir_map[x.trim] ).filter(fn(x) => x != None);
+for ins in instructions {
+	let next = cur + ins;
+	if next in walls {
+		// do nothing
+	} else if next in boxes {
+		let nn = next + ins;
+		let box_to_move = next;
+		let dest = None;
+		while true {
+			if nn in boxes {
+				nn = nn + ins;
+			} else if nn in walls {
+				break;
+			} else {
+				dest = Some(nn);
+				break;
+			}
+		}
+
+		
+		// dump();
+		// print(cur, ins, dest, dest.is_none, None.is_none);
+		// assert(false);
+		if dest.is_some {
+			boxes.remove(box_to_move);
+			boxes.insert(dest.unwrap);
+			cur = next;
+			// dump();
+			// print(cur, ins, dest);
+			// assert(false);
+		} else {
+			// illagal move
+		}
+
+	} else {
+		cur = next;
+	}
+}
+
+
+
+for (y, x) in boxes.keys {
+	// print(y, x);
+	p1 += 100 * y + x;
+}
+
+print(p1, p2);
