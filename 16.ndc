@@ -6,24 +6,28 @@ let width = grid[0].len;
 let height = grid.len;
 
 fn turn_right(dir) {
-	if dir == (0, 1) { (1, 0) }
-	else if dir == (1, 0) { (0, -1) }
-	else if dir == (0, -1) { (-1, 0) }
-	else if dir == (-1, 0) { (0, 1) }
-	else { assert(false) }
+    if dir == (0, 1) { (1, 0) }
+    else if dir == (1, 0) { (0, -1) }
+    else if dir == (0, -1) { (-1, 0) }
+    else if dir == (-1, 0) { (0, 1) }
+    else { assert(false) }
 }
 
-pure fn turn_left(dir) {
-	dir.turn_right.turn_right.turn_right
+fn turn_left(dir) {
+    if dir == (0, 1) { (-1, 0) }
+    else if dir == (1, 0) { (0, 1) }
+    else if dir == (0, -1) { (1, 0) }
+    else if dir == (-1, 0) { (0, -1) }
+    else { assert(false) }
 }
 
 let start, end = (), ();
 for r in (0..height), c in (0..width) {
-	if grid[r][c] == "S" {
-		start = (r, c);
-	} else if grid[r][c] == "E" {
-		end = (r, c);
-	} 
+    if grid[r][c] == "S" {
+        start = (r, c);
+    } else if grid[r][c] == "E" {
+        end = (r, c);
+    } 
 }
 
 let queue = MinHeap();
@@ -34,29 +38,29 @@ seen.insert((start, (0, -1)), 0);
 let cur_best = Inf;
 let all_paths = [];
 while queue.len > 0 {
-	let cur_cost, cur, dir, path = queue.pop.unwrap;
+    let cur_cost, cur, dir, path = queue.pop.unwrap;
+  
+    if cur == end {
+        if cur_cost > cur_best {
+            break;
+        }
 
-	for (cost, next_dir) in [(1, dir), (1001, turn_left(dir)), (1001, turn_right(dir))] {
-		let next = cur + next_dir;
-		let next_cost = cur_cost +  cost;
-		let nr, nc = (cur + next_dir);
-		if next == end {
-			let p1 = cur_cost + cost;
-			let p2 = ((path ++ [next])).set;
-			cur_best min= p1;
-			if p1 == cur_best {
-				all_paths.push((p1, p2));
-			}
-		}
-		if nc >= 0 and nc < width and nr >= 0 and nr < height and grid[nr][nc] == "." {
-			if seen[(next, next_dir)] >= next_cost and next_cost < cur_best {
-				seen.insert((next, next_dir), cur_cost + cost);
-				queue.push((cur_cost + cost, next, next_dir, path ++ [next]));
-			}
-		}
-	}
+        cur_best min= cur_cost;
+        all_paths.push((cur_cost, path));
+    }
+
+    for (cost, next_dir) in [(1, dir), (1001, turn_left(dir)), (1001, turn_right(dir))] {
+        let next = cur + next_dir;
+        let next_cost = cur_cost +  cost;
+        if grid[next[0]][next[1]] in ".E" {
+            if seen[(next, next_dir)] >= next_cost and next_cost < cur_best {
+                seen[(next, next_dir)] = cur_cost + cost;
+                queue.push((cur_cost + cost, next, next_dir, path ++ [next]));
+            }
+        }
+    }
 }
 
 let best_path = all_paths.map(fn(x) => x[0]).min;
 print(best_path);
-print(all_paths.map(fn(x) => x[1]).reduce(fn(a, b) => a | b).len);
+print(all_paths.map(fn(x) => x[1]).fold(%{}, fn(a, b) => a | b.set).len);
