@@ -1,5 +1,3 @@
-// let input = read_file("input/2024/17.txt").trim;
-
 fn run_compiled(prog, ra, rb, rc) {
     let output = [];
     while ra > 0 {
@@ -90,6 +88,7 @@ fn run(prog, ra, rb, rc) {
 	return output;
 }
 
+let input = read_file("input/2024/17.txt").trim;
 let registers, program = input.paragraphs;
 let prog = program.nums;
 let ra, rb, rc = registers.nums;
