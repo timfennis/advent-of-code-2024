@@ -1,16 +1,17 @@
 
 let dir_map = %{">": (0, 1), "v": (1, 0), "<": (0, -1), "^": (-1, 0)};
+let dirs = [(0, 1), (1, 0), (0, -1), (-1, 0)]; // right, down, left, up
 
-let nb4 = [(-1, 0), (1, 0), (0, -1), (0, 1)];
+let nb4 = [(-1, 0), (1, 0), (0, -1), (0, 1)]; // in no particular order
 let nb5 = nb4 ++ [(0, 0)];
 let nb8 = [(x, y) for x in -1..=1, y in -1..=1, if x != 0 or y != 0];
 let nb9 = [(x, y) for x in -1..=1, y in -1..=1];
 
 // Iterate over grid and do stuff
 // Grid problem help
-let grid = input.lines();
-let height = grid.len();
-let width = grid[0].len();
+let grid = input.lines;
+let height = grid.len;
+let width = grid[0].len;
 
 for r in (0..height), c in (0..width) {
 	if lines[r][c] == "#" {

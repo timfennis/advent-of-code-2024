@@ -1,0 +1,9 @@
+let input = read_file("input/2024/17.txt").trim;
+
+let p1, p2 = 0, 0;
+
+for line in input.lines {
+	print(line);
+}
+
+print(p1, p2);
