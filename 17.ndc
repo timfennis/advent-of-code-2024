@@ -59,8 +59,6 @@ fn run(prog, ra, rb, rc) {
 
 		// 2,4,1,1,7,5,0,3,4,3,1,6,5,5,3,0
 
-
-
 		if ins == 0 {
 			ra = ra \ (2^combo(op));
 			ip += 2;
@@ -101,26 +99,45 @@ let registers, program = input.paragraphs;
 let prog = program.nums;
 let ra, rb, rc = registers.nums;
 
-print(run(prog, ra, rb, rc).join(","));
-print(run2(prog, ra, rb, rc).join(","));
+
+// print(run2(prog, 30979942470458, 0, 0).join(","));
+// assert(false);
+// print(run(prog, ra, rb, rc).join(","));
+// print(run2(prog, ra, rb, rc).join(","));
 
 let bl = 0;
 // let i = (2^45) - 100;
 // let base = (7 << 45) | (7 << 42);
 // let base = 27 << 6;
-let base = (56 << 18) | (38 << 12) | 35;
+// let base = (56 << 18) | (38 << 12) | 35;
+let base = 1846544 << 9;
+base = base | 10470;
+base = base << 9;
+base = base | 4416;
+base = base << 9;
+// base 
 // base = base | (38);
 for i in (0..) {
-	let out = run2(prog, base | (i <<6) , 0, 0);//  == prog
+	let out = run2(prog, base | i , 0, 0);//  == prog
 
 	let out = out.reversed;
 	let prog = prog.reversed;
 
-	if out == prog {
-		print("ANSWER: "<>i);
-		break;
-	} else {
+	// if out == prog {
+	// 	print("ANSWER: "<>i);
+	// 	break;
+	// }
+
+	let search = [0, 3, 5, 5, 6, 1, 3, 4, 3, 0, 5, 7, 1, 1];
+
+	if out.len > search.len and out[0..(search.len)] == search {
 		print("i="<>i, "out="<>out, "prog="<>prog, "outlen="<>out.len,"proglen="<>prog.len);
+	}
+
+	if out == [0,3,5,5,6,1,3,4,3,0,5,7,1,1,4,2]  {
+		print(run2(prog, base | i , 0, 0));
+		print(base | i);
+		assert(false);
 	}
 
 	i += 1;
@@ -131,3 +148,6 @@ for i in (0..) {
     // Combo operand 5 represents the value of register B.
     // Combo operand 6 represents the value of register C.
     // Combo operand 7 is reserved and will not appear in valid programs.
+
+// 1846544 -- 111 000 010 110 | 100 010 000
+// 1846551 -- 111 000 010 110 | 100 010 111
