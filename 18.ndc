@@ -1,12 +1,12 @@
 let input = read_file("input/2024/18.txt").trim;
 
+let nb4 = [(-1, 0), (1, 0), (0, -1), (0, 1)];
+let p1, p2;
 
-let nb4 = [(-1, 0), (1, 0), (0, -1), (0, 1)]; // in no particular order
-for i in (2524..) {
+for i in (1024..) {
 
 	let data = input.lines.map(nums);
-asssert(false);
-	let p1_data = %{ (y, x) for x, y in data[0..i]};
+	let objects = %{ (y, x) for x, y in data[0..i]};
 
 	let width = 71;
 	let height = 71;
@@ -23,6 +23,9 @@ asssert(false);
 
 		if cur == (70, 70) {
 			found = true;
+			if i == 1024 {
+				print("Part 1", cost);
+			}
 			break;
 		}
 
@@ -31,7 +34,7 @@ asssert(false);
 			let next_cost = cost + 1;
 
 
-			if next[0] < height and next[1] < width and next[0] >= 0 and next[1] >= 0 and next not in p1_data {
+			if next[0] < height and next[1] < width and next[0] >= 0 and next[1] >= 0 and next not in objects {
 				if seen[next] > next_cost {
 					queue.push((next_cost, next));
 					seen[next] = next_cost;
@@ -41,7 +44,7 @@ asssert(false);
 	}
 
 	if found == false {
-		print(i, data[i - 1]);
+		print("Part 2: ", data[i - 1][0] <> "," data[i - 1][1]);
 		break;
 	} 
 }
