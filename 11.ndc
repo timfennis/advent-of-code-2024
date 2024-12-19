@@ -6,7 +6,7 @@ for num in nums {
 }
 
 let p1, p2 = 0, 0;
-for i in 1..=1000 {
+for i in 1..=75 {
 	let next = %{:0};
 	for (num, amount) in stones {
 		if num == 0 {
