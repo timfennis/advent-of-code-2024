@@ -1,0 +1,42 @@
+let input = read_file("input/2024/19.txt").trim;
+// let input = "r, wr, b, g, bwu, rb, gb, br
+
+// brwrr
+// bggr
+// gbbr
+// rrbgbr
+// ubwu
+// bwurrg
+// brgr
+// bbrgwb".trim;
+
+let patterns, designs = input.paragraphs;
+let patterns = patterns.split(", ");
+let designs = designs.lines;
+
+pure fn is_possible(design) {
+	if design == "" {
+		return 1;
+	}
+
+	let result = 0;
+	for pat in patterns {
+		if design.starts_with(pat) {
+			result += is_possible(design[(pat.len)..]);
+		}
+	}
+
+	return result;
+}
+
+let p1, p2 = 0, 0;
+
+for design in designs {
+	let r = is_possible(design);
+	if r > 0 {
+		p1 += 1;
+	}
+	p2 += r;
+}
+
+print(p1, p2);
