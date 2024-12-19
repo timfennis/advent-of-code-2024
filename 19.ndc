@@ -1,32 +1,15 @@
-let input = read_file("input/2024/19.txt").trim;
-
-let patterns, designs = input.paragraphs;
-let patterns = patterns.split(", ");
-let designs = designs.lines;
+let patterns, designs = read_file("input/2024/19.txt").trim.paragraphs;
+patterns = patterns.split(", ");
 
 pure fn is_possible(design) {
 	if design == "" {
 		return 1;
 	}
 
-	let result = 0;
-	for pat in patterns {
-		if design.starts_with(pat) {
-			result += is_possible(design[(pat.len)..]);
-		}
-	}
-
-	return result;
+	patterns
+		.filter(fn(pat) => design.starts_with(pat))
+		.map(fn(pat) => is_possible(design[(pat.len)..])).sum
 }
 
-let p1, p2 = 0, 0;
-
-for design in designs {
-	let r = is_possible(design);
-	if r > 0 {
-		p1 += 1;
-	}
-	p2 += r;
-}
-
-print(p1, p2);
+let out = designs.lines.map(fn(design) => is_possible(design));
+print(out.count(fn(n) => n > 0), out.sum);
