@@ -5,12 +5,12 @@ let height, width = grid.len, grid[0].len;
 let nb4 = [(-1, 0), (1, 0), (0, -1), (0, 1)];
 
 fn all_paths(start) {
-    let q = MinHeap();
-    q.push([start]);
+    let q = Deque();
+    q.push_back([start]);
 
     let seen = %{};
     while q.len > 0 {
-        let path = q.pop.unwrap;
+        let path = q.pop_front;
         let cur = path.last;
         let cur_h = grid[cur[0]][cur[1]];
 
@@ -22,7 +22,7 @@ fn all_paths(start) {
                     if next_h == 9 {
                         seen.insert(path ++ [next]);
                     } else {
-                        q.push(path ++ [next]);
+                        q.push_back(path ++ [next]);
                     }
                 }
             }

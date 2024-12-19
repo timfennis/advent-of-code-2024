@@ -38,7 +38,7 @@ seen.insert((start, (0, -1)), 0);
 let cur_best = Inf;
 let all_paths = [];
 while queue.len > 0 {
-    let cur_cost, cur, dir, path = queue.pop.unwrap;
+    let cur_cost, cur, dir, path = queue.pop;
   
     if cur == end {
         if cur_cost > cur_best {
