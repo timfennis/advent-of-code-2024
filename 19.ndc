@@ -1,8 +1,8 @@
 let patterns, designs = read_file("input/2024/19.txt").trim.paragraphs;
 patterns split= ", ";
-pure fn is_possible(design) {
+pure fn count_possible(design) {
 	if design == "" { return 1 }
-	patterns.filter(fn(pat) => design.starts_with(pat)).map(fn(pat) => is_possible(design[(pat.len)..])).sum
+	patterns.filter(fn(pat) => design.starts_with(pat)).map(fn(pat) => count_possible(design[(pat.len)..])).sum
 }
-let out = designs.lines.map(is_possible);
+let out = designs.lines.map(count_possible);
 print(out.count(fn(n) => n > 0), out.sum);
