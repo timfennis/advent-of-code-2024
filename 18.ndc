@@ -1,32 +1,24 @@
 let input = read_file("input/2024/18.txt").trim;
+let data = input.lines.map(nums);
 
 let nb4 = [(-1, 0), (1, 0), (0, -1), (0, 1)];
-let p1, p2;
 
-for i in (1024..) {
-
-	let data = input.lines.map(nums);
+fn solve(i) {
 	let objects = %{ (y, x) for x, y in data[0..i]};
 
 	let width = 71;
 	let height = 71;
 
-	let queue = MinHeap();
-	queue.push((0, (0, 0)));
+	let queue = Deque();
+	queue.push_back(((0, 0), 0));
 	let seen = %{:Inf};
 	seen[0, 0] = 0;
 
-	let found = false;
-
 	while queue.len > 0 {
-		let cost, cur = queue.pop.unwrap;
+		let cur, cost = queue.pop_front;
 
 		if cur == (70, 70) {
-			found = true;
-			if i == 1024 {
-				print("Part 1", cost);
-			}
-			break;
+			return cost;
 		}
 
 		for delta in nb4 {
@@ -36,15 +28,23 @@ for i in (1024..) {
 
 			if next[0] < height and next[1] < width and next[0] >= 0 and next[1] >= 0 and next not in objects {
 				if seen[next] > next_cost {
-					queue.push((next_cost, next));
+					queue.push_back((next, next_cost));
 					seen[next] = next_cost;
 				}
 			}
 		}
 	}
 
-	if found == false {
-		print("Part 2: ", data[i - 1][0] <> "," data[i - 1][1]);
+	return None;
+}
+
+print("Part 1:", solve(1024));
+let i = data.len;
+while i > 1024 {
+	if solve(i)	!= None {
+		print("Part 2:", data[i][0] <> "," <> data[i][1]);
 		break;
-	} 
+	}
+
+	i -= 1;
 }
