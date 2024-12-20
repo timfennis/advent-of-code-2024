@@ -1,0 +1,136 @@
+let input = read_file("input/2024/20.txt").trim;
+// let input = "###############
+// #...#...#.....#
+// #.#.#.#.#.###.#
+// #S#...#.#.#...#
+// #######.#.#.###
+// #######.#.#...#
+// #######.#.###.#
+// ###..E#...#...#
+// ###.#######.###
+// #...###...#...#
+// #.#####.#.###.#
+// #.#...#.#.#...#
+// #.#.#.#.#.#.###
+// #...#...#...###
+// ###############";
+
+let nb4 = [(-1, 0), (1, 0), (0, -1), (0, 1)];
+let grid = input.lines;
+let width = grid[0].len;
+let height = grid.len;
+
+
+let start, end = (), ();
+for r in (0..height), c in (0..width) {
+    if grid[r][c] == "S" {
+        start = (r, c);
+    } else if grid[r][c] == "E" {
+        end = (r, c);
+    } 
+}
+
+let p1_hack = 0;
+let seen_backup = None;
+fn heuristic(start) {
+    let que = Deque();
+    que.push_back((start, 0));
+    let seen = %{:Inf, start: 0};
+    while que.len > 0 {
+        let cur, dist = que.pop_front;
+        for dir in nb4 {
+            let next = cur + dir;
+            if next not in seen and next[0] >= 0 and next[0] < height and next[1] >= 0 and next[1] < width {
+                seen[next] = dist + 1;
+                que.push_back((next, dist + 1));
+            }
+        }
+    }
+
+    return seen;
+}
+
+let helper = heuristic(end);
+// print(helper);
+
+fn solve(start, can_cheat, max_cost) {
+
+    let queue = MinHeap();
+    let out = %{};
+    let seen = %{};
+
+    queue.push((0, start, ()));
+
+    seen[()] = %{:Inf, start: 0};
+
+    while queue.len > 0 {
+        let cost, cur, cheat_loc = queue.pop;
+
+        // print(queue.len, seen.len);
+        // if cur == end {
+        //     if cost <= max_cost and cheat_loc != () {
+        //         p1_hack += 1; 
+        //         // print("found one", p1_hack);
+        //     }
+        //     out.push((cheat_loc, cost));
+        // } 
+
+        if cost < max_cost {
+            for dir in nb4 {
+                let next = cur + dir;
+                let next_cost = cost + 1;
+
+                if grid[next[0]][next[1]] in ".E" {
+                    if seen[cheat_loc][next] > next_cost {
+                        seen[cheat_loc][next] = next_cost;
+                        queue.push((next_cost, next, cheat_loc));
+                    }
+                } else if grid[next[0]][next[1]] == "#" and cheat_loc == () and can_cheat {
+
+                    for dir2 in nb4 {
+                        let next2 = next + dir2;
+                        let next_cost2 = next_cost + 1;
+                        // next2 != next, we don't want to walk back where we came from
+
+                        let cheat = (cur, next2);
+                        let dist_remaining = helper[next2];
+
+                        if next_cost2 + dist_remaining <= max_cost {
+                            out.push((cheat, next_cost2 + dist_remaining));
+                        }
+                        // if helper[next2] < helper[cur] and next2 != cur and next2[0] >= 0 and next2[0] < width and next2[1] >= 0 and next2[1] < height and grid[next2[0]][next2[1]] in ".E" {
+
+                        //     out.push((cheat, helper[next2] )) 
+                        //     if cheat not in seen and seen[()][next2] > next_cost2 {
+                        //         seen[cheat] = seen[()].clone();
+                        //         seen[cheat][next2] = next_cost2;
+                        //         queue.push((next_cost2, next2, cheat));
+                        //     }
+                        // }
+                    }
+                }
+            }
+        }
+    }
+
+    if can_cheat == false {
+        seen_backup = seen[()];
+    }
+
+    return out;
+}
+
+let ref = solve(start, false, Inf).first.last;
+print("Shortest path without cheating:", ref);
+let out = solve(start, true, ref - 100);
+
+let p1 = 0;
+for (cheat_jump, cost) in out {
+    if ref - cost > 0 {
+        print("can finish in: ", cost, "saving:", ref - cost);
+        p1 += if ref - cost >= 0 { 1 } else { 0 };
+    }
+}
+
+print("Part 1:", p1);
+// out.dbg;
