@@ -97,40 +97,8 @@ fn make_seq(from, to, graph) {
 	best
 }
 
-// This function was only being used for part 1 to actually expand all the options
-fn solve_seq(seq, graph) {
-	let seq = "A" <> seq;
-	let thing = [];
-	for (from, to) in seq.pairwise {
-		let options = make_seq(from, to, graph).map(fn(x) => x.join(""));
-		thing.push(options);
-	}
-
-	thing.multi_cartesian_product.map(fn(x) => x.join(""))
-}
-
-pure fn solve_p2_key(from, to, times) {
-	let ways = make_seq(from, to, keypad_graph);
-	
-	if times == 1 {
-		return ways[0].len;
-	}
-
-	let best = Inf;
-	for way in ways {
-		let way = ["A"] ++ way;
-		let sum = 0;
-		for (from, to) in way.pairwise {
-			sum += solve_p2_key(from, to, times - 1);
-		}
-		best min= sum;
-	}
-
-	return best;
-}
-
-fn solve_p2_num(from, to, times) {
-	let ways = make_seq(from, to, numpad_graph);
+pure fn solve_pair(from, to, graph, times) {
+	let ways = make_seq(from, to, graph);
 
 	if times == 1 {
 		return ways.first.len;
@@ -143,7 +111,7 @@ fn solve_p2_num(from, to, times) {
 		let sum = 0;
 
 		for (from, to) in way.pairwise {
-			sum += solve_p2_key(from, to, times - 1);
+			sum += solve_pair(from, to, keypad_graph, times - 1);
 		}	
 
 		best min= sum;
@@ -155,17 +123,17 @@ fn solve_p2_num(from, to, times) {
 
 let p1, p2 = 0, 0;
 
-fn solve(line, depth) {
-	let length = 0;
-	for (a, b) in line.pairwise {
-		length += solve_p2_num(a, b, depth);
+fn solve(depth) {
+	let sum = 0;
+	for line in input.lines {
+		let length = 0;
+		for (a, b) in ("A"<>line).pairwise {
+			length += solve_pair(a, b, numpad_graph, depth);
+		}
+		sum += length * nums(line)[0];
 	}
-	length * nums(line)[0]
+	sum
 }
 
-for line in input.lines {
-	p1 += solve("A"<>line, 3);
-	p2 += solve("A"<>line, 26);
-}
-
-print(p1, p2);
+print("Part 1:", solve(3));
+print("Part 2:", solve(26));
