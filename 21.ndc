@@ -71,7 +71,6 @@ let keypad_graph = %{
 fn solve_next(from, to, graph) {
 	let q = Deque();
 	q.push_back((from, [from]));
-	// let seen = %{};
 
 	let options = [];
 	while q.len > 0 {
@@ -80,7 +79,6 @@ fn solve_next(from, to, graph) {
 			options.push(path);
 		} else {
 			for nb in graph[cur], if nb not in path {
-				// seen.insert(nb);
 				q.push_back((nb, path ++ [nb]));
 			}
 		}
@@ -110,19 +108,64 @@ fn solve_seq(seq, graph) {
 	thing.multi_cartesian_product.map(fn(x) => x.join(""))
 }
 
-let p1 = 0;
-for line in input.lines {
-
-	let shortest = Inf;
-	for s1 in solve_seq(line, numpad_graph) {
-		for s2 in solve_seq(s1, keypad_graph) {
-			shortest min= solve_seq(s2, keypad_graph).map(fn(s) => s.len).min;
-		}	
+pure fn solve_p2_key(from, to, times) {
+	let ways = make_seq(from, to, keypad_graph);
+	
+	if times == 1 {
+		return ways[0].len;
 	}
 
-	let val = nums(line)[0];
-	print(shortest, "*", val);
-	p1 += shortest * val;
+	let best = Inf;
+	for way in ways {
+		let way = ["A"] ++ way;
+		let sum = 0;
+		for (from, to) in way.pairwise {
+			sum += solve_p2_key(from, to, times - 1);
+		}
+		best min= sum;
+	}
+
+	return best;
 }
 
-print(p1);
+fn solve_p2_num(from, to, times) {
+	let ways = make_seq(from, to, numpad_graph);
+
+	if times == 1 {
+		return ways.first.len;
+	}
+
+	let best = Inf;
+	for way in ways {
+		let way = ["A"] ++ way;
+
+		let sum = 0;
+
+		for (from, to) in way.pairwise {
+			sum += solve_p2_key(from, to, times - 1);
+		}	
+
+		best min= sum;
+	}
+
+	return best;
+}
+
+
+let p1, p2 = 0, 0;
+
+fn solve(line, depth) {
+	let length = 0;
+	for (a, b) in line.pairwise {
+		length += solve_p2_num(a, b, depth);
+	}
+	length * nums(line)[0]
+}
+
+for line in input.lines {
+	let path = "A" <> line;
+	p1 += solve("A"<>line, 3);
+	p2 += solve("A"<>line, 26);
+}
+
+print(p1, p2);
