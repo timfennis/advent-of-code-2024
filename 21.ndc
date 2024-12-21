@@ -97,6 +97,7 @@ fn make_seq(from, to, graph) {
 	best
 }
 
+// This function was only being used for part 1 to actually expand all the options
 fn solve_seq(seq, graph) {
 	let seq = "A" <> seq;
 	let thing = [];
@@ -163,7 +164,6 @@ fn solve(line, depth) {
 }
 
 for line in input.lines {
-	let path = "A" <> line;
 	p1 += solve("A"<>line, 3);
 	p2 += solve("A"<>line, 26);
 }
