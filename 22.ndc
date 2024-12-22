@@ -1,41 +1,37 @@
 let input = read_file("input/2024/22.txt").trim;
-let p1, p2 = 0, 0;
+let p1 = 0;
 
 fn calc(num) {
-	num ~= num * 64;
-	num %= 16777216;
-	num ~= num \ 32;
-	num %= 16777216;
-	num ~= num * 2048;
-	num %= 16777216;
-	num	
+    num ~= num * 64;
+    num %= 16777216;
+    num ~= num \ 32;
+    num %= 16777216;
+    num ~= num * 2048;
+    num %= 16777216;
+    num	
 }
 
-let sequences = %{:fn() => []};
-let seen = %{};
+let sequences = %{:0};
 for idx, line in input.lines.enumerate {
-	seen[idx] = %{};
-	let sn = line.int; 
-	let nums = [sn % 10];
-	for x in 0..2000 {
-		sn = calc(sn);
-		nums.push(sn % 10);
+    
+    let seen = %{};
 
-		if nums.len >= 5 {
-			let seq = nums[-5..].pairwise((fn(a, b) => b - a));
-			if seq not in seen[idx] {
-				sequences[seq].push(nums.last);
-				seen[idx].insert(seq);
-			}
-		}
-	}
-	p1 += sn;	
+    let sn = line.int; 
+    let nums = [sn % 10];
+    for x in 0..2000 {
+        sn = calc(sn);
+        nums.push(sn % 10);
+
+        if nums.len >= 5 {
+            let seq = nums[-5..].pairwise((fn(a, b) => b - a));
+            if seq not in seen {
+                sequences[seq] += nums.last;
+                seen.insert(seq);
+            }
+        }
+    }
+    p1 += sn;	
 }
 
-p2 = -Inf;
-for seq, ns in sequences {
-	// print(seq, ns, ns.sum);
-	p2 max= ns.sum;
-}
-
+let p2 = sequences.values.max;
 print(p1, p2);
