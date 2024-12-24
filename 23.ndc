@@ -1,0 +1,74 @@
+let input = read_file("input/2024/23.txt");
+
+let p1, p2 = 0, 0;
+
+let graph = %{:fn() => []};
+for line in input.lines {
+	let from, to = line.split("-");
+
+	graph[from].push(to);
+	graph[to].push(from);
+}
+
+// This solves part 1 and I have no idea how
+let out = %{};
+for (from, tt) in graph {
+	for to in tt {
+		for next in graph[to] {
+			if next in tt {
+				let y = [from, to, next].sorted;
+				out.insert(y);
+			}
+		}
+	}
+}
+
+fn is_valid_mesh(mesh) {
+	for n1 in mesh, n2 in mesh, if n1 != n2 {
+		if n2 not in graph[n1] or n1 not in graph[n2] {
+			// print("FALSE", n2, n1);
+			return false;
+		}
+	}
+
+	return true;
+}
+
+fn find_best(start) {
+	let all = graph[start] ++ [start];
+	let size = all.len;	
+
+	while size > 2 {
+		for mesh in all.combinations(size) {
+			if is_valid_mesh(mesh) {
+				return Some(mesh.sorted);
+			}
+		}
+
+		size -= 1;
+	}
+	
+	return None;
+}
+
+for node in out.keys {
+	if node.any(fn(c) => c.starts_with("t")) {
+		p1 += 1;
+	}
+}
+
+let best, bbest = -Inf, %{};
+for node in graph.keys {
+	let s = find_best(node);
+
+	if s.is_some {
+		let s = s.unwrap;
+		if s.len > best {
+			p2 = s.sorted.join(",");
+			best = s.len;
+		}
+	}	
+}
+
+print(p1);
+print(p2);
