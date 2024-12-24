@@ -1,9 +1,187 @@
 let input = read_file("input/2024/24.txt").trim;
+let i, l = input.paragraphs;
 
-let p1, p2 = 0, 0;
+// These swaps were figured out by analysing the input
+// using the print functions found below and duping to graphviz
+let swaps = %{k:v for k, v in [
+ ("z10", "gpr"),
+ ("ghp", "z33"),
+ ("z21", "nks"),
+ ("cpm", "krs"),
 
-for line in input.lines {
-	print(line);
+ ("gpr", "z10"),
+ ("z33", "ghp"),
+ ("nks", "z21"),
+ ("krs", "cpm")
+]};
+
+fn get_orig(reg) { reg }
+fn get_swap(reg) {
+	if reg in swaps {
+		swaps[reg]
+	} else {
+		reg
+	}
 }
 
-print(p1, p2);
+fn run(deref) {
+	let mem = %{:None};
+	for line in i.lines {
+		let k, v = line.split(": ");
+		mem[k] = int(v);
+	}
+
+
+	// For running the simulation
+	let seen = %{};
+	let work = true;
+	while work {
+		work = false;
+
+		for op in l.lines, if op not in seen {
+			let a, b = op.split(" -> ");
+			
+			if "XOR" in a {
+				let a1, a2 = a.split(" XOR ");
+				// Debug 
+				graph[a1].insert(b);
+				graph[a2].insert(b);
+				edges[a1, b] = "XOR";
+				edges[a2, b] = "XOR";
+				// Debug
+				if a1 in mem and a2 in mem {
+					mem[deref(b)] = mem[a1] ~ mem[a2];
+					seen.insert(op);
+					work = true;
+				}
+			} else if "AND" in a {
+				let a1, a2 = a.split(" AND ");
+				// Debug
+				graph[a1].insert(b);
+				graph[a2].insert(b);
+				edges[a1, b] = "AND";
+				edges[a2, b] = "AND";
+				// Debug
+				if a1 in mem and a2 in mem {
+					mem[deref(b)] = mem[a1] & mem[a2];
+					seen.insert(op);
+					work = true;
+				}
+			} else if "OR" in a {
+				let a1, a2 = a.split(" OR ");
+				// Debug
+				graph[a1].insert(b);
+				graph[a2].insert(b);
+				edges[a1, b] = "OR";
+				edges[a2, b] = "OR";
+				// Debug
+				if a1 in mem and a2 in mem {
+					mem[deref(b)] = mem[a1] | mem[a2];
+					seen.insert(op);
+					work = true;
+				}
+			}
+		}
+	}
+
+	return mem;
+}
+// Just for debugging
+let graph = %{:fn() => %{}};
+let edges = %{:"?"};
+
+fn find(start) {
+	if start.starts_with("z") {
+		return [start];
+	}
+
+	let out = [];
+	for to in graph[start].keys {
+		out ++= find(to);
+	}
+	return out;
+}
+
+fn rev_find(end) {
+	if end.starts_with("x") or end.starts_with("y") {
+		return [end];
+	}
+
+	let out = [];
+	for from, to in graph {
+		if end in to {
+			out ++= rev_find(from);
+		}
+	}
+	return out;
+}
+
+fn print_forward() {
+	for c in "xy", i in 0..45 {
+		let reg = if i < 10 { c <> "0" <> i } else { c <> i };
+		print(reg, find(reg).sorted.len);
+	}
+}
+
+fn print_graph() {
+	print("digraph{");
+	for from, to in graph {
+		for tt in to.keys {
+			let x = edges[(from, tt)];
+			let y = edges[(tt, from)];
+			let note = if x == none { y } else { x };
+			print(from, "->", tt, "[label=\"" <> note <> "\"]");
+		}
+	}
+	print("}");
+}
+
+fn print_z() {
+	for i in 0..=45 {
+		let reg = if i < 10  {
+			"z0"<>i
+		} else {
+			"z" <> i
+		};
+
+		print(reg, rev_find(reg).sorted)
+		print("---------------------------------------------");
+	}
+}
+
+fn trace(reg) {
+	let inputs = [];
+	for from, to in graph {
+		if reg in to {
+			trace(from);
+			inputs.push(from);
+		}
+	}
+
+	if inputs.len == 0 {
+		return;
+	}
+
+	let [l, r] = inputs;
+
+
+	print(l, edges[l, reg], r, reg);
+}
+
+
+// Some debug printing that's now disabled
+// print_graph();
+// print_z();
+// print_forward();
+// trace("z11");
+
+let p1 = run(get_orig);
+let p2 = run(get_swap);
+
+let xx = p2.keys.filter(fn(k) => k.starts_with("x")).sorted.reversed.map(fn(k) => p2[k]).join("");
+let yy = p2.keys.filter(fn(k) => k.starts_with("y")).sorted.reversed.map(fn(k) => p2[k]).join("");
+let zz = p2.keys.filter(fn(k) => k.starts_with("z")).sorted.reversed.map(fn(k) => p2[k]).join("");
+// print("0b" <> xx , "+", "0b" <> yy, "=", "0b" <> zz);
+
+print("Part 1:", p1.keys.filter(fn(k) => k.starts_with("z")).sorted.reversed.map(fn(k) => p1[k]).join(""));
+print("Part 2:", swaps.keys.sorted.join(","));
