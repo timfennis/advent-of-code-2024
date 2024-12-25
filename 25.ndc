@@ -1,0 +1,30 @@
+let input = read_file("input/2024/25.txt").trim;
+let p1, p2 = 0, 0;
+
+let keys = input.paragraphs;
+
+let kk, ll = [], [];
+for key in keys {
+	let grid = key.lines;
+	let width = grid[0].len;
+	let height = grid.len;
+
+	let obs = %{(y, x) for y in 0..height, x in 0..width, if grid[y][x] == "#"};
+	if grid[0] == "#####" {
+		ll.push(obs);
+	} else {
+		kk.push(obs);
+	}
+}
+
+print(ll.len, kk.len);
+
+for k in kk {
+	for l in ll {
+		if (k & l).len == 0 {
+			p1 += 1;
+		}
+	}
+}
+
+print(p1, p2);
